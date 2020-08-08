@@ -6,4 +6,4 @@ description 'Boris Bike'
 version '1.0.0'
 
 -- Script 1/2
-client_script 'Client/clientborisbike.lua'
+client_script 'clientborisbike.lua'

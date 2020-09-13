@@ -3,7 +3,7 @@
 -- Location Coords
 
 borisbikemarkerlocations = {
-  [1] = {"borisbliphospital",295.95858764648, -611.47515869141, 42.95,38,70.0}, --(Name, X,Y, Z, Blip, RotZ)
+  [1] = {"borisbliphospital",295.95858764648, -611.47515869141, 42.97,38,70.0}, --(Name, X,Y, Z, Blip, RotZ)
   [2] = {"borisblipairport",-1050.6302490234, -2741.1262207031, 14.17,38,-30.0},
   [3] = {"borisblippier",-1637.2801513672, -1012.6521606445, 12.7,38,50.0},
   [4] = {"borisbliplegion",189.57662963867, -845.60565185547, 30.62,38,30.0}
@@ -15,7 +15,7 @@ borisbikemarkerlocations = {
 
 Citizen.CreateThread(function()
   while true do
-    for i,v in pairs(borisbikemarkerlocations) do
+    for i,v in pairs(borisbikemarkerlocations) do -- i = index so going through the diffrent parts of the table and v = the value in the decleration
        DrawMarker(v[5],v[2],v[3],v[4], 0.0, 0.0, 0.0, 0.0, 0.0, v[6], 2.0, 2.0, 2.0, 255, 128, 0, 50, false, false, 2, nil, nil, false)
     end
     Wait(0)
@@ -30,13 +30,13 @@ Citizen.CreateThread(function()
     for i,v in pairs(borisbikemarkerlocations) do
         local borisblip = AddBlipForCoord(v[2],v[3])
         -- sets the blip id (which icon will be desplayed)
-        SetBlipSprite(borisblip, 661)
+        SetBlipSprite(borisblip, 536)
         -- sets where the blip to be shown on both the minimap and the menu map
         SetBlipColour(borisblip, 46)
         -- colour of blip
         SetBlipDisplay(borisblip, 6)
         -- how big the blip will be
-        SetBlipScale(borisblip, 0.9)
+        SetBlipScale(borisblip, 0.6)
         -- blip entry type
         SetBlipAsShortRange(borisblip, true)
         -- Sets whether or not the specified blip should only be displayed when nearby, or on the minimap.
@@ -101,22 +101,22 @@ end
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(50)
-        for i,v in pairs(borisbikemarkerlocations) do
-            local clientlocation = GetEntityCoords(PlayerPedId())
-            local bikelocations = vector3(v[2],v[3],v[4])
-            local distance = #(clientlocation - bikelocations)
-            if distance <= 2.5 then
-                if IsControlJustReleased(0, 46) then
-                    RequestModel("cruiser")
-                        while not HasModelLoaded("cruiser") do
-                            Citizen.Wait(1)
-                            RequestModel("cruiser")
-                        end
-                    local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
-                    CreateVehicle("cruiser", x, y + 2 , z + 0.25 , GetEntityHeading(PlayerPedId()), true, false)
+            for i,v in pairs(borisbikemarkerlocations) do
+                local clientlocation = GetEntityCoords(PlayerPedId())
+                local bikelocations = vector3(v[2],v[3],v[4])
+                local distance = #(clientlocation - bikelocations) -- Hashtag means number
+                if distance <= 2.5 then
+                    if IsControlJustReleased(0, 46) then
+                        RequestModel("BMX")
+                            while not HasModelLoaded("BMX") do
+                                Citizen.Wait(1)
+                                RequestModel("BMX")
+                            end
+                        local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
+                        CreateVehicle("BMX", x, y + 2 , z + 0.25 , GetEntityHeading(PlayerPedId()), true, false)
+                    end
                 end
             end
-        end
     end
 end)
 

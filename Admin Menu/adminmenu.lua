@@ -56,9 +56,9 @@ handguns = {
 subweapons ={
     "weapon_microsmg","weapon_smg",}
 shotguns = {
-    "weapon_pistol","weapon_stungun","weapon_flaregun","weapon_marksmanpistol","weapon_revolver","weapon_raypistol"}
+    "weapon_pumpshotgun","weapon_sawnoffshotgun","weapon_assaultshotgun","weapon_musket"}
 assaultrifles = {
-    "weapon_assaultrifle","weapon_specialcarbine","weapon_flaregun","weapon_marksmanpistol","weapon_revolver","weapon_raypistol"}
+    "weapon_assaultrifle","weapon_specialcarbine","weapon_carbinerifle","weapon_compactrifle"}
 lmgs = {
     "weapon_mg","weapon_combatmg","weapon_gusenberg"}
 snipers = {
@@ -68,7 +68,7 @@ heavy = {
 throw = {
     "weapon_grenade","weapon_bzgas","weapon_molotov","weapon_stickybomb","weapon_snowball","weapon_ball","weapon_smokegrenade","weapon_flare"}
 misc = {
-    "weapon_petrolcan","weapon_fireextinguisher"}
+    "weapon_petrolcan","weapon_fireextinguisher","gadget_parachute"}
 function ThirdItem(menu)
     local submenu = _menuPool:AddSubMenu(menu, "Weapons -->","Weapon Features") 
     local meleeList = NativeUI.CreateListItem("Melee Weapons", meleeweapons, 1)
@@ -147,17 +147,75 @@ function ThirdItem(menu)
     end
 end
 
+carveh = {"T20","Zentorno","Osiris"}
+moterbikeveh = {"Bati","Manchez"}
+truckveh = {"Monster","TrophyTruck",}
+cycleveh = {"BMX","Scorcher","TriBike3"}
+boatveh = {"dinghy3","submersible2","seashark"}
+heliveh = {"Buzzard","Skylift","Savage"}
+planeveh ={"Hydra","Lazer","Besra","Stunt"}
+miscveh = {"Forklift","Tractor","Blimp","Rhino","Dump","Bulldozer","Dune4"}
 -- used in "FourthItem"
 function FourthItem(menu) 
-   local submenu = _menuPool:AddSubMenu(menu, "Cars -->","Car Features") 
-   local carItem = NativeUI.CreateItem("Spawn car","")
-   submenu:AddItem(carItem)
+   local submenu = _menuPool:AddSubMenu(menu, "Vehicles -->","Vehicle Features") 
+   local carlist = NativeUI.CreateListItem("Spawn Car",carveh,1)
+   local trucklist = NativeUI.CreateListItem("Spawn Truck",truckveh,1)
+   local moterbikelist = NativeUI.CreateListItem("Spawn Moterbike",moterbikeveh,1)
+   local cyclelist = NativeUI.CreateListItem("Spawn Cycle",cycleveh,1)
+   local boatlist = NativeUI.CreateListItem("Spawn Boats",boatveh,1)
+   local helilist = NativeUI.CreateListItem("Spawn Helicopters",heliveh,1)
+   local planelist = NativeUI.CreateListItem("Spawn Planes",planeveh,1)
+   local misclist = NativeUI.CreateListItem("Spawn Misc",miscveh,1)
+   submenu:AddItem(carlist)
+   submenu:AddItem(trucklist)
+   submenu:AddItem(moterbikelist)
+   submenu:AddItem(cyclelist)
+   submenu:AddItem(boatlist)
+   submenu:AddItem(helilist)
+   submenu:AddItem(planelist)
+   submenu:AddItem(misclist)
    _menuPool:MouseControlsEnabled(false)
    _menuPool:MouseEdgeEnabled(false)
-   submenu.OnItemSelect = function(sender, item)
-        if item == carItem then
-            spawnCar("T20")
-            notify("Spawned in an T20")
+   submenu.OnListSelect = function(sender, item, index)
+        if item == carlist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == trucklist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == moterbikelist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == cyclelist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == boatlist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == helilist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == planelist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
+        end
+        if item == misclist then
+            local selectedvehicle = item:IndexToItem(index)
+            spawnCar(selectedvehicle)
+            notify("Spawned a "..selectedvehicle)
         end
    end
 end
@@ -186,7 +244,7 @@ function notify(text)
 end
 
 function giveWeapon(hash)
-    GiveWeaponToPed(GetPlayerPed(-1), GetHashKey(hash), 999, false, false)
+    GiveWeaponToPed(PlayerPedId(), GetHashKey(hash), 999, false, false)
 end
 
 function spawnCar(car)

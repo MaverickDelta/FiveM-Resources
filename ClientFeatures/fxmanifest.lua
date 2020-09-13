@@ -5,4 +5,4 @@ author 'Maverick Delta'
 description 'Client Commands'
 version '1.0.0'
 
-client_script 'Client/clientscripts.lua'
+client_script 'clientscripts.lua'

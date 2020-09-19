@@ -90,8 +90,6 @@ Citizen.CreateThread(function()
   end
 end)
 
--- notify("Press ~g~ E ~w~ to roll dice")
-
 yay = "Congrats!!!"
 nay = "Better luck next time"
 
@@ -104,7 +102,7 @@ Citizen.CreateThread(function()
         local distance = #(plrpos - strlocs)
           if distance <= 2.5 then
             if IsControlJustReleased(0, 46) then
-              ThefeedRemoveItem()
+              ThefeedFlushQueue()
               bool = false
               dicenumreq = math.random(1,6)
               notify("You need to roll a: " .. dicenumreq)

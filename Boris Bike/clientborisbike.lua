@@ -100,13 +100,15 @@ end
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(50)
+        Citizen.Wait(0)
             for i,v in pairs(borisbikemarkerlocations) do
                 local clientlocation = GetEntityCoords(PlayerPedId())
                 local bikelocations = vector3(v[2],v[3],v[4])
                 local distance = #(clientlocation - bikelocations) -- Hashtag means number
                 if distance <= 2.5 then
                     if IsControlJustReleased(0, 46) then
+                        exports['ProgressBar']:startUI(10000, "Retreving")
+                        Wait(10000)
                         RequestModel("BMX")
                             while not HasModelLoaded("BMX") do
                                 Citizen.Wait(1)

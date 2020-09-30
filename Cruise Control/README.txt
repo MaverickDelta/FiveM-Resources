@@ -7,6 +7,7 @@ Z = Turn off cruise control
 S = Turn off cruise control (Breaking)
 Spacebar = Turn off cruise control (Breaking)
 
+Turns off when it senses a collision
 Also turns off when under 20mph
 
 Accelerate

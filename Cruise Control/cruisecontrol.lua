@@ -4,10 +4,12 @@ local cruisespeed
 Citizen.CreateThread(function()
     while true do 
         Citizen.Wait(0)
-        local carspeed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId(), false))
-        local speed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId(), false))
+        local ped = PlayerPedId()
+        local vehicle = GetVehiclePedIsIn(ped,false)
+        local carspeed = GetEntitySpeed(GetVehiclePedIsIn(ped, false))
+        local speed = GetEntitySpeed(GetVehiclePedIsIn(ped, false))
         cruisespeed = carspeed
-        if GetVehiclePedIsIn(PlayerPedId(),false) and IsPedInAnyVehicle(PlayerPedId(),false) and speed*2.2369 > 20 and not IsPedInAnyBoat(PlayerPedId()) and not IsPedInAnyPlane(PlayerPedId()) and IsControlJustReleased(0, 246) then
+        if vehicle and IsPedInAnyVehicle(ped,false) and speed*2.2369 > 20 and not IsPedInAnyBoat(ped) and not IsPedInAnyPlane(ped) and IsControlJustReleased(0, 246) then
             if not cruiseactive then
                 ThefeedFlushQueue()
                 notify("Cruise control ~g~active ~w~at " .. math.floor(speed*2.2369).. " mph")
@@ -19,13 +21,13 @@ Citizen.CreateThread(function()
             end
         end
         if cruiseactive == true then
-            local carspeed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId(), false))
+            local carspeed = GetEntitySpeed(vehicle)
             if IsControlJustPressed(0, 20) or IsControlJustPressed(0, 72) or IsControlJustPressed(0, 22) then 
                 ThefeedFlushQueue()
                 notify("Cruise control ~r~disabled")
                 cruiseactive = false
             end
-            if HasEntityCollidedWithAnything(GetVehiclePedIsIn(PlayerPedId(),false)) then
+            if HasEntityCollidedWithAnything(vehicle) then
                 ThefeedFlushQueue()
                 notify("Cruise control ~r~disabled")
                 cruiseactive = false
@@ -51,10 +53,12 @@ end
 
 function cruisecontrol()
 	Citizen.CreateThread(function()
-		while true do
-			Citizen.Wait(0)
-			if cruiseactive and IsVehicleOnAllWheels(GetVehiclePedIsIn(PlayerPedId())) then
-				SetVehicleForwardSpeed(GetVehiclePedIsIn(PlayerPedId(), false), cruisespeed)
+        while true do
+            Citizen.Wait(0)
+            local ped = PlayerPedId()
+            local vehicle = GetVehiclePedIsIn(ped,false)
+			if cruiseactive and IsVehicleOnAllWheels(vehicle) then
+				SetVehicleForwardSpeed(vehicle, cruisespeed)
 			end
 		end
 	end)

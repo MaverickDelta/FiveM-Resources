@@ -16,8 +16,8 @@ Citizen.CreateThread(function()
                 cruiseactive = true
                 cruisecontrol()
             else
-				notify("Cruise control ~r~disabled")
-				cruiseactive = false
+		notify("Cruise control ~r~disabled")
+		cruiseactive = false
             end
         end
         if cruiseactive == true then
@@ -33,8 +33,8 @@ Citizen.CreateThread(function()
                 cruiseactive = false
             end
             if IsControlPressed(0, 71) then
-				cruiseactive = false
-				accelerate()
+		cruiseactive = false
+		accelerate()
             end
             if speed*2.23694 < 20 then
                 ThefeedFlushQueue()

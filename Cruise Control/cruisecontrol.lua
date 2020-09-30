@@ -20,17 +20,12 @@ Citizen.CreateThread(function()
         end
         if cruiseactive == true then
             local carspeed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId(), false))
-            if IsControlJustReleased(0, 20) then 
+            if IsControlJustPressed(0, 20) or IsControlJustPressed(0, 72) or IsControlJustPressed(0, 22) then 
                 ThefeedFlushQueue()
                 notify("Cruise control ~r~disabled")
                 cruiseactive = false
             end
-            if IsControlJustReleased(0, 72) then 
-                ThefeedFlushQueue()
-                notify("Cruise control ~r~disabled")
-                cruiseactive = false
-            end
-            if IsControlJustReleased(0, 22) then 
+            if HasEntityCollidedWithAnything(GetVehiclePedIsIn(PlayerPedId(),false)) then
                 ThefeedFlushQueue()
                 notify("Cruise control ~r~disabled")
                 cruiseactive = false

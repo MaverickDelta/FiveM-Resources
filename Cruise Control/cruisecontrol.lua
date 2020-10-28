@@ -1,76 +1,51 @@
-local cruiseactive = false
-local cruisespeed
+local cruiseActive = false
+local initialSpeed, currentSpeed
 
-Citizen.CreateThread(function()
-    while true do 
-        Citizen.Wait(0)
-        local ped = PlayerPedId()
-        local vehicle = GetVehiclePedIsIn(ped,false)
-        local carspeed = GetEntitySpeed(GetVehiclePedIsIn(ped, false))
-        local speed = GetEntitySpeed(GetVehiclePedIsIn(ped, false))
-        cruisespeed = carspeed
-        if vehicle and IsPedInAnyVehicle(ped,false) and speed*2.2369 > 20 and not IsPedInAnyBoat(ped) and not IsPedInAnyPlane(ped) and IsControlJustReleased(0, 246) then
-            if not cruiseactive then
-                ThefeedFlushQueue()
-                notify("Cruise control ~g~active ~w~at " .. math.floor(speed*2.2369).. " mph")
-                cruiseactive = true
-                cruisecontrol()
-            else
-		notify("Cruise control ~r~disabled")
-		cruiseactive = false
-            end
-        end
-        if cruiseactive == true then
-            local carspeed = GetEntitySpeed(vehicle)
-            if IsControlJustPressed(0, 20) or IsControlJustPressed(0, 72) or IsControlJustPressed(0, 22) then 
-                ThefeedFlushQueue()
-                notify("Cruise control ~r~disabled")
-                cruiseactive = false
-            end
-            if HasEntityCollidedWithAnything(vehicle) then
-                ThefeedFlushQueue()
-                notify("Cruise control ~r~disabled")
-                cruiseactive = false
-            end
-            if IsControlPressed(0, 71) then
-		cruiseactive = false
-		accelerate()
-            end
-            if speed*2.23694 < 20 then
-                ThefeedFlushQueue()
-                notify("Cruise control ~r~disabled")
-                cruiseactive = false
-		    end
-        end
-    end
+local restrictedClasses = {
+	[8] = true, [13] = true, [14] = true,
+	[15] = true, [16] = true, [21] = true,
+}
+
+RegisterKeyMapping('cruisecontrol', 'Cruise Control', 'keyboard', 'y')
+RegisterCommand('cruisecontrol', function(source)
+	local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+	local vehicleClass = GetVehicleClass(vehicle)
+	local driver = GetPedInVehicleSeat(vehicle, -1)
+	if vehicle ~= 0 and not restrictedClasses[vehicleClass] and driver == GetPlayerPed(-1) then
+		cruiseActive = not cruiseActive
+
+		if cruiseActive then
+			initialSpeed = GetEntitySpeed(vehicle)
+			TriggerEvent('mythic_notify:client:SendAlert', { type = 'inform', text = 'Cruise Control Activated ' .. initialSpeed*2.2369 .. ' MPH' })
+		end
+	end
 end)
 
-function notify(text)
-    BeginTextCommandThefeedPost("STRING")
-    AddTextComponentString(text)
-    DrawNotification(true, true)
-end
-
-function cruisecontrol()
-	Citizen.CreateThread(function()
-        while true do
-            Citizen.Wait(0)
-            local ped = PlayerPedId()
-            local vehicle = GetVehiclePedIsIn(ped,false)
-			if cruiseactive and IsVehicleOnAllWheels(vehicle) then
-				SetVehicleForwardSpeed(vehicle, cruisespeed)
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(0)
+		local canSleep = true
+		if cruiseActive then
+			local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+			currentSpeed = GetEntitySpeed(vehicle)
+			canSleep = false
+			if GetVehicleFuelLevel(vehicle) < 10 then
+				cruiseActive = false
+				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = 'Cruise Control Deactivated. Low fuel.'})
+			elseif IsControlPressed(2, 72) or IsControlPressed(2, 71) then
+				initialSpeed = currentSpeed
+			elseif initialSpeed*2.2369 > 10 and IsVehicleOnAllWheels(vehicle) and currentSpeed*2.2369 > 10 then
+				SetVehicleForwardSpeed(vehicle, initialSpeed)
+			elseif IsControlPressed(2, 76) or IsControlJustReleased(2, 76) then
+				cruiseActive = false
+				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = 'Cruise Control Deactivated. Handbrake engaged.'})
+			else
+				cruiseActive = false
+				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = 'Cruise Control Deactivated.'})
 			end
 		end
-	end)
-end
-
-function accelerate()
-    Citizen.CreateThread(function()
-        local speed = GetEntitySpeed(GetVehiclePedIsIn(PlayerPedId(), false))
-		while IsControlPressed(27, 71) do
-			Citizen.Wait(1)
+		if canSleep then
+			Citizen.Wait(750)
 		end
-		cruiseactive = true
-        cruisecontrol()
-	end)
-end
+	end
+end)
